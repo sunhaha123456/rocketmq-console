@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>欢迎使用，请登录！</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" th:href="@{/static/img/favicon.ico}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/rocketmqAdmin/static/img/favicon.ico" type="image/x-icon" />
+    <style type="text/css">
+        #container{ width:500px;}
+        #container table td{ line-height:34px; font-size:12px;}
+        body{
+            background: url("/rocketmqAdmin/static/img/loginBg.jpg") no-repeat fixed 0 0;
+            background-size:100% 100%;
+        }
+    </style>
+
+    <script type="text/javascript" src="/rocketmqAdmin/static/vendor/jquery/jquery1.11.3.min.js"></script>
+    <script language="javascript">
+        function funOk() {
+            var userName = $('#userName').val();
+            var userPwd = $('#userPwd').val();
+            if (userName == '') {
+                alert("用户名不能为空！");
+                return;
+            }
+            if (userPwd == '') {
+                alert("密码不能为空！");
+                return;
+            }
+            $.ajax({
+                async: false,
+                url: "/rocketmqAdmin/loginValidate?userName=" + userName + "&userPwd=" + userPwd,
+                type: "POST",
+                cache: false,
+                success: function (res) {
+                    var data = res.data;
+                    if (data.code == "1") {
+                        window.location.href = "/rocketmqAdmin/index.html";
+                    } else {
+                        $("#id_name").html("用户名或密码错误！").show(300).delay(2000).hide(300);
+                    }
+                },
+                error: function (xhr, status, error) {}
+            });
+        }
+
+        function codeKeyDown() {
+            if (event.keyCode == 13) {
+                funOk();
+            }
+        }
+
+        $(function () {
+            $(window).resize(function(){
+                $("#container").css({
+                    position: "absolute",
+                    top: ($(window).height() - $("#container").outerHeight())/2 - 165,
+                    left: ($(window).width() - $("#container").outerWidth())/2 - 65
+                });
+            });
+            $(window).resize();
+        });
+    </script>
+</head>
+<body>
+<div id="container">
+    <form action="#" method="post" id="form1">
+        <table width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+                <td width="114"></td>
+                <td align="left" width="210"><font size="5" color="#f0ffff"><strong>Rocketmq 控制台</strong></font></td>
+                <td width="286"></td>
+            </tr>
+            <tr>
+                <td align="right" valign="middle"></td>
+                <td align="left"><input name="uname" type="text" id="userName" size="30" placeholder="用户名" /></td>
+                <td><div id="unameTip"></div></td>
+            </tr>
+            <tr>
+                <td align="right" valign="middle"></td>
+                <td align="left"><input name="upwd" type="password" id="userPwd" size="30" placeholder="密码" onkeydown="codeKeyDown()" /></td>
+                <td><div id="upwdTip"></div></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="left"><input type="button" id="ok" name="ok" onclick="funOk();" value="登陆" style=" width:120px;" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td align="left"><span id="id_name"></span></td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
